@@ -1,8 +1,12 @@
 name: Python Project CI/CD
 
+# Переключаем Node.js для действий на версию 24
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 on:
   push:
-    branches: [ "main" ]  # 'master' дегенди 'владелец' деп алмаштырыңыз
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -11,23 +15,41 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Копирование кода
+    # 1. Копирование кода
+    - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Установка Python
+    # 2. Установка Python
+    - name: Setup Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.9'
 
-    - name: Установка зависимостей
+    # 3. Установка зависимостей
+    - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-    - name: Запуск тестов
+    # 4. Запуск тестов
+    - name: Run tests
       run: python test_logic.py
 
-    - name: Проверка работы программы (Dry run)
+    # 5. Проверка работы программы (Dry run)
+    - name: Dry run check
       run: |
-        echo "25" | python main.py 
-        if [ -f app.log ]; then echo "Лог-файл создан!"; else exit 1; fi
+        echo "25" | python main.py
+        if [ -f app.log ]; then 
+          echo "Log file created!"
+        else 
+          echo "Error: app.log not found"
+          exit 1
+        fi
+
+    # 6. Отладка (если что-то не так)
+    - name: Debug log
+      run: |
+        echo "Current directory contents:"
+        ls -al
+        echo "Content of app.log (if exists):"
+        cat app.log || echo "Log file not found"
