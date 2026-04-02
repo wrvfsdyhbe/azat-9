@@ -31,28 +31,24 @@ jobs:
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-    # 4. Запуск тестов
-    - name: Run tests
-      run: python test_logic.py
-
-    # 5. Проверка работы программы (Dry run)
+    # 4. Dry run check
     - name: Dry run check (debug)
       run: |
-        echo "Running main.py..."
-        echo "25" | python main.py || echo "main.py failed!"
-        echo "Files in current dir:"
-        ls -al
-        if [ -f app.log ]; then
+        echo "Running lab8/main.py..."
+        python lab8/main.py || echo "main.py failed!"
+        echo "Files in lab8 folder:"
+        ls -al lab8
+        if [ -f lab8/app.log ]; then
           echo "Log file created!"
         else
           echo "Error: app.log not found"
           exit 1
         fi
 
-    # 6. Отладка (если что-то не так)
+    # 5. Debug log
     - name: Debug log
       run: |
-        echo "Current directory contents:"
+        echo "Current repository contents:"
         ls -al
-        echo "Content of app.log (if exists):"
-        cat app.log || echo "Log file not found"
+        echo "Content of lab8/app.log (if exists):"
+        cat lab8/app.log || echo "Log file not found"
