@@ -36,12 +36,15 @@ jobs:
       run: python test_logic.py
 
     # 5. Проверка работы программы (Dry run)
-    - name: Dry run check
+    - name: Dry run check (debug)
       run: |
-        echo "25" | python main.py
-        if [ -f app.log ]; then 
+        echo "Running main.py..."
+        echo "25" | python main.py || echo "main.py failed!"
+        echo "Files in current dir:"
+        ls -al
+        if [ -f app.log ]; then
           echo "Log file created!"
-        else 
+        else
           echo "Error: app.log not found"
           exit 1
         fi
